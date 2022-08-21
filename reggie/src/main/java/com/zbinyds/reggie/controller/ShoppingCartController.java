@@ -87,9 +87,9 @@ public class ShoppingCartController {
     }
 
     /**
-     * 购物车删除功能。删除菜品/套餐
-     * @param shoppingCart
-     * @return
+     * 购物车减少/删除功能。减少/删除 菜品/套餐
+     * @param shoppingCart：将参数封装成shoppingCart对象
+     * @return：返回修改后的菜品/套餐
      */
     @PostMapping("/sub")
     public R<ShoppingCart> sub(@RequestBody ShoppingCart shoppingCart) {
@@ -127,7 +127,7 @@ public class ShoppingCartController {
 
     /**
      * 清空购物车功能。
-     * @param session
+     * @param session：session域对象。获取当前用户
      * @return
      */
     @DeleteMapping("/clean")
