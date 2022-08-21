@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zbinyds.reggie.mapper.SetmealMapper">
+
+    <resultMap id="BaseResultMap" type="com.zbinyds.reggie.pojo.Setmeal">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="categoryId" column="category_id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="price" column="price" jdbcType="DECIMAL"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="code" column="code" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="image" column="image" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createUser" column="create_user" jdbcType="BIGINT"/>
+            <result property="updateUser" column="update_user" jdbcType="BIGINT"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="CategoryName" column="category_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,category_id,name,
+        price,status,code,
+        description,image,create_time,
+        update_time,create_user,update_user,
+        is_deleted
+    </sql>
+    <!-- Page<Setmeal> selectPageVo(@Param("page") Page page, @Param("setMealName") String setMealName); -->
+        <select id="selectPageVo" resultMap="BaseResultMap">
+            SELECT t1.*,t2.name as category_name FROM setmeal t1 LEFT JOIN category t2
+            ON t1.category_id = t2.id where 1=1
+            <if test="setMealName != '' and setMealName != null">
+                and t1.name LIKE '%${setMealName}%'
+            </if>
+            and t1.is_deleted != 1
+            ORDER BY update_time DESC
+        </select>
+</mapper>

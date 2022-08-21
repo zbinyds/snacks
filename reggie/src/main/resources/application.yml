@@ -1,0 +1,19 @@
+server:
+  port: 2491
+spring:
+  # 配置druid数据源
+  datasource:
+    url: jdbc:mysql://localhost:3306/reggiedb?serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  # 开启实体类的别名。我们可以直接通过别名（类名），找到该类。
+  type-aliases-package: com.zbinyds.reggie.pojo
+  configuration:
+    # 配置log日志，可以显示详细的sql日志信息
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+# 设置图片文件的下载位置
+reggie:
+  path: E:\reggie_img\
