@@ -41,12 +41,12 @@ public class UserController {
         String phone = user.getPhone();
 
         if (StringUtils.isNotEmpty(phone)) {
-            // 生成随机的4位验证码
+            // 生成随机的6位验证码
             String code = ValidateCodeUtils.generateValidateCode(6).toString();
             log.info(code);
 
             // 使用阿里云提供的短信服务，发送短信
-//            SMSUtils.sendMessage("阿里云短信测试","SMS_154950909",phone,code);
+            SMSUtils.sendMessage("阿里云短信测试","SMS_154950909",phone,code);
 
             // 将验证码保存到session域中
             session.setAttribute(phone, code);

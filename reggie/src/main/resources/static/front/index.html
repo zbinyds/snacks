@@ -413,12 +413,10 @@
                     params.setmealId = item.id
                 }
                 const res = await addCartApi(params)
-                console.log(res.data)
                 if (res.code === 1) {
                     this.dishList.forEach(dish => {
                         if (dish.id === item.id) {
                             dish.number = res.data.number
-                            console.log("2==="+res.data.number);
                         }
                     })
                     if (this.setMealDialog.show) {

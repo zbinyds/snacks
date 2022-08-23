@@ -31,6 +31,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
         <!-- SpringBoot-test依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -109,6 +110,12 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <!-- 修改maven打包插件的版本 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
             </plugin>
         </plugins>
     </build>
