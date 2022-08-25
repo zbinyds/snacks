@@ -28,7 +28,8 @@
         <div class="divSplit"></div>
         <el-input placeholder=" 请输入验证码" v-model="form.code" maxlength='20'/>
         </el-input>
-        <span @click='getCode'>获取验证码</span>
+        <span @click='getCode' v-if="!codeFlag">获取验证码</span>
+        <span v-else="!codeFlag">{{codeTime}}秒后重发</span>
     </div>
     <div class="divMsg" v-if="msgFlag">手机号输入不正确，请重新输入</div>
     <el-button type="primary" :class="{btnSubmit:1===1,btnNoPhone:!form.phone,btnPhone:form.phone}" @click="btnLogin">
@@ -55,8 +56,11 @@
                     phone: '',
                     code: ''
                 },
+                second: 60, // 验证码60秒倒计时
+                codeTime: 60, // 页面上展示的实时倒计时
                 msgFlag: false,
-                loading: false
+                loading: false,
+                codeFlag: false
             }
         },
         computed: {},
@@ -65,16 +69,34 @@
         mounted() {
         },
         methods: {
-            getCode() {
+            async getCode() {
                 this.form.code = ''
                 const regex = /^(13[0-9]{9})|(15[0-9]{9})|(17[0-9]{9})|(18[0-9]{9})|(19[0-9]{9})$/;
                 if (regex.test(this.form.phone)) {
                     this.msgFlag = false
                     // this.form.code = (Math.random()*1000000).toFixed(0) // 下载的原样式
-                    sendMsgApi({phone: this.form.phone})
+                    const res = await sendMsgApi({phone: this.form.phone})
+                    // 这里还可以优化，生成动态的60s倒计时。
+                    if (res.code === 1) {
+                        this.codeFlag = true
+                        this.timeDown();
+                    }
                 } else {
                     this.msgFlag = true
                 }
+            },
+            //验证码60秒倒计时
+            async timeDown() {
+                let result = setInterval(() => {
+                    --this.second;
+                    this.codeTime = this.second
+                    if (this.second < 1) {
+                        clearInterval(result);
+                        this.codeFlag = false;
+                        this.second = 60;
+                        this.codeTime = 60;
+                    }
+                }, 1000);
             },
             async btnLogin() {
                 if (this.form.phone && this.form.code) {
