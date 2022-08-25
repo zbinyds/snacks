@@ -1,5 +1,5 @@
 server:
-  port: 2491
+  port: 8080
 spring:
   # 配置druid数据源
   datasource:
