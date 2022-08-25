@@ -76,7 +76,7 @@
                     this.msgFlag = false
                     // this.form.code = (Math.random()*1000000).toFixed(0) // 下载的原样式
                     const res = await sendMsgApi({phone: this.form.phone})
-                    // 这里还可以优化，生成动态的60s倒计时。
+                    // 生成动态的60s倒计时
                     if (res.code === 1) {
                         this.codeFlag = true
                         this.timeDown();
