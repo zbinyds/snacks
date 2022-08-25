@@ -94,6 +94,6 @@ public class AddressBook implements Serializable {
 
 
     //是否删除
-    @TableLogic
+//    @TableLogic
     private Integer isDeleted;
 }
