@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 2491
 spring:
   # 配置druid数据源
   datasource:
@@ -7,6 +7,12 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  # 配置redis相关设置
+  redis:
+    host: 43.142.108.139
+    port: 6379
+    password: 123456
+    database: 0
 
 mybatis-plus:
   # 开启实体类的别名。我们可以直接通过别名（类名），找到该类。
