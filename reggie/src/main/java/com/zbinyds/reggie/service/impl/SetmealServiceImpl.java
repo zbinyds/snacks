@@ -201,6 +201,27 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
 
         this.updateBatchById(setmeals);
     }
+
+    @Override
+    public SetmealDto getSetmealAndDish(String id) {
+        // 获取该套餐的基本信息
+        LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Setmeal::getId,id);
+        Setmeal setmeal = this.getOne(queryWrapper);
+
+        // 将setmeal对象copy给setmealDto对象，方便数据传输
+        SetmealDto setmealDto = new SetmealDto();
+        BeanUtils.copyProperties(setmeal,setmealDto);
+
+        // 查询该套餐中的菜品数据，并将其设置给setmealDto对象
+        LambdaQueryWrapper<SetmealDish> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(SetmealDish::getSetmealId,id);
+        List<SetmealDish> list = setmealDishService.list(lambdaQueryWrapper);
+        setmealDto.setSetmealDishes(list);
+
+        // 返回setmealDto对象（含有套餐基本信息和套餐对应菜品的详细信息）
+        return setmealDto;
+    }
 }
 
 

@@ -1,5 +1,6 @@
 package com.zbinyds.reggie.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -7,8 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zbinyds.reggie.commen.R;
 import com.zbinyds.reggie.dto.SetmealDto;
 import com.zbinyds.reggie.pojo.Setmeal;
+import com.zbinyds.reggie.pojo.SetmealDish;
+import com.zbinyds.reggie.service.SetmealDishService;
 import com.zbinyds.reggie.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +36,9 @@ public class SetMealController {
 
     @Autowired
     private SetmealService setmealService;
+
+    @Autowired
+    private SetmealDishService setmealDishService;
 
     /**
      * 套餐管理信息分页显示功能
@@ -121,5 +128,16 @@ public class SetMealController {
     public R<List<Setmeal>> list(Setmeal setmeal) throws JsonProcessingException {
         List<Setmeal> list = setmealService.getSetMealList(setmeal);
         return R.success(list);
+    }
+
+    /**
+     * 用户端：点击套餐图片展示套餐详细信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/dish/{id}")
+    public R<SetmealDto> dish(@PathVariable String id){
+        SetmealDto setmealDto = setmealService.getSetmealAndDish(id);
+        return R.success(setmealDto);
     }
 }

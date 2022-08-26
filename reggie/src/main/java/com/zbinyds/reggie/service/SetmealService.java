@@ -2,6 +2,7 @@ package com.zbinyds.reggie.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.zbinyds.reggie.dto.DishDto;
 import com.zbinyds.reggie.dto.SetmealDto;
 import com.zbinyds.reggie.pojo.Dish;
 import com.zbinyds.reggie.pojo.Setmeal;
@@ -61,5 +62,17 @@ public interface SetmealService extends IService<Setmeal> {
      */
     List<Setmeal> getSetMealList(Setmeal setmeal) throws JsonProcessingException;
 
+    /**
+     * 修改套餐状态
+     * @param status
+     * @param ids
+     */
     void updateStatus(Integer status, String ids);
+
+    /**
+     * 根据套餐id获取套餐信息及对应的菜品信息
+     * @param id
+     * @return
+     */
+    SetmealDto getSetmealAndDish(String id);
 }
