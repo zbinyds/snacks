@@ -8,6 +8,7 @@ import com.zbinyds.reggie.pojo.Setmeal;
 import com.zbinyds.reggie.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,6 +29,9 @@ public class SetMealController {
 
     @Autowired
     private SetmealService setmealService;
+
+    @Autowired(required = false)
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 套餐管理信息分页显示功能
@@ -53,7 +57,6 @@ public class SetMealController {
      */
     @PostMapping
     public R<String> save(@RequestBody SetmealDto setmealDto) {
-        log.info("setmealDto :{}", setmealDto);
         setmealService.saveSetmealAndDish(setmealDto);
         return R.success("添加套餐成功");
     }

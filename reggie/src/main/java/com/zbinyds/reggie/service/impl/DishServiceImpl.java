@@ -55,7 +55,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish>
             flavor.setDishId(id);
         }
         // 删除该菜品的缓存信息
-        Set<String> keys = stringRedisTemplate.keys("category_" + dishDto.getCategoryId() + "_1");
+        Set<String> keys = stringRedisTemplate.keys("dish_" + dishDto.getCategoryId() + "_1");
         stringRedisTemplate.delete(keys);
 
         dishFlavorService.saveBatch(flavors);
@@ -100,7 +100,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish>
             flavor.setDishId(dishDto.getId());
         }
         // 清理该菜品的缓存数据
-        Set<String> keys = stringRedisTemplate.keys("category_" + dishDto.getCategoryId() + "_1");
+        Set<String> keys = stringRedisTemplate.keys("dish_" + dishDto.getCategoryId() + "_1");
         stringRedisTemplate.delete(keys);
 
         dishFlavorService.saveBatch(flavors);
@@ -122,7 +122,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish>
         }
         // 清理所修改菜品对应的分类缓存，如果存在多个菜品，则将它们对应的分类缓存全部清空。
         for (Long aLong : set) {
-            Set<String> keys = stringRedisTemplate.keys("category_" + aLong + "_1");
+            Set<String> keys = stringRedisTemplate.keys("dish_" + aLong + "_1");
             stringRedisTemplate.delete(keys);
         }
 
@@ -163,7 +163,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish>
 
         // 清理所删除菜品对应的分类缓存，如果存在多个菜品，则将它们对应的分类缓存全部清空。
         for (Long aLong : categoryIdSet) {
-            Set<String> keys = stringRedisTemplate.keys("category_" + aLong + "_1");
+            Set<String> keys = stringRedisTemplate.keys("dish_" + aLong + "_1");
             stringRedisTemplate.delete(keys);
         }
         dishFlavorService.remove(dishFlavorQueryWrapper);
@@ -175,7 +175,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish>
         /*
          * 1、先尝试从缓存中获取数据
          * */
-        String key = "category_" + dish.getCategoryId() + "_" + dish.getStatus();
+        String key = "dish_" + dish.getCategoryId() + "_" + dish.getStatus();
         String s = stringRedisTemplate.opsForValue().get(key);
         /*
          * 2、如果缓存中存在数据，直接返回，无需查询数据库
