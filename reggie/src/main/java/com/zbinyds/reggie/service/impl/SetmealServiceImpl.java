@@ -57,7 +57,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         setmealDishService.saveBatch(setmealDishes);
 
         // 删除该套餐分类的缓存信息
-        Set<String> keys = stringRedisTemplate.keys("setMeal_" + setmealDto.getCategoryId() + "_1");
+        Set<String> keys = stringRedisTemplate.keys("setMeal_" + setmealDto.getCategoryId());
         stringRedisTemplate.delete(keys);
     }
 
@@ -104,7 +104,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         setmealDishService.saveBatch(setmealDishes);
 
         // 删除该套餐分类的缓存信息
-        Set<String> keys = stringRedisTemplate.keys("setMeal_" + setmealDto.getCategoryId() + "_1");
+        Set<String> keys = stringRedisTemplate.keys("setMeal_" + setmealDto.getCategoryId());
         stringRedisTemplate.delete(keys);
     }
 
@@ -141,7 +141,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
 
         // 清理所删除套餐对应的分类缓存，如果存在多个套餐，则将它们对应的分类缓存全部清空。
         for (Long aLong : set) {
-            Set<String> keys = stringRedisTemplate.keys("setMeal_" + aLong + "_1");
+            Set<String> keys = stringRedisTemplate.keys("setMeal_" + aLong);
             stringRedisTemplate.delete(keys);
         }
     }
@@ -153,7 +153,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         /*
          * 1、先尝试从缓存中获取数据
          * */
-        String key = "setMeal_" + setmeal.getCategoryId() + "_" + setmeal.getStatus();
+        String key = "setMeal_" + setmeal.getCategoryId();
         String s = stringRedisTemplate.opsForValue().get(key);
 
         /*
@@ -195,7 +195,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         }
         // 清理所修改套餐对应的分类缓存，如果存在多个套餐，则将它们对应的分类缓存全部清空。
         for (Long aLong : set) {
-            Set<String> keys = stringRedisTemplate.keys("setMeal_" + aLong + "_1");
+            Set<String> keys = stringRedisTemplate.keys("setMeal_" + aLong);
             stringRedisTemplate.delete(keys);
         }
 
