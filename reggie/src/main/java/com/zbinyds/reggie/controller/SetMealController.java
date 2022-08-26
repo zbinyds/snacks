@@ -2,6 +2,8 @@ package com.zbinyds.reggie.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zbinyds.reggie.commen.R;
 import com.zbinyds.reggie.dto.SetmealDto;
 import com.zbinyds.reggie.pojo.Setmeal;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author zbinyds
@@ -29,9 +32,6 @@ public class SetMealController {
 
     @Autowired
     private SetmealService setmealService;
-
-    @Autowired(required = false)
-    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 套餐管理信息分页显示功能
@@ -107,13 +107,7 @@ public class SetMealController {
      */
     @PostMapping("/status/{id}")
     public R<String> updateStatus(@PathVariable("id") Integer status, String ids) {
-        // 获取id数组，并将其遍历封装为集合。从而实现批量修改。
-        String[] idList = ids.split(",");
-        ArrayList<Setmeal> setmeals = new ArrayList<>(idList.length);
-        for (String id : idList) {
-            setmeals.add(new Setmeal(Long.valueOf(id), status));
-        }
-        setmealService.updateBatchById(setmeals);
+        setmealService.updateStatus(status,ids);
         return R.success("套餐状态修改成功");
     }
 
@@ -124,11 +118,8 @@ public class SetMealController {
      * @return
      */
     @GetMapping("/list")
-    public R<List<Setmeal>> list(Setmeal setmeal) {
-        QueryWrapper<Setmeal> setmealQueryWrapper = new QueryWrapper<>();
-        setmealQueryWrapper.eq(setmeal.getCategoryId() != null,"category_id", setmeal.getCategoryId());
-        setmealQueryWrapper.eq(setmeal.getStatus() != null, "status", setmeal.getStatus());
-        List<Setmeal> list = setmealService.list(setmealQueryWrapper);
+    public R<List<Setmeal>> list(Setmeal setmeal) throws JsonProcessingException {
+        List<Setmeal> list = setmealService.getSetMealList(setmeal);
         return R.success(list);
     }
 }
