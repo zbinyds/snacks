@@ -50,9 +50,9 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
      * @param orders
      */
     @Transactional
-    public void submit(Orders orders) {
+    public void submit(Orders orders,HttpSession session) {
         //获得当前用户id
-        Long userId = BaseContext.getCurrentId();
+        Long userId = (Long) session.getAttribute("user");
 
         //查询当前用户的购物车数据
         LambdaQueryWrapper<ShoppingCart> wrapper = new LambdaQueryWrapper<>();

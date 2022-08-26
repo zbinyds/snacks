@@ -31,12 +31,6 @@ public class OrderController {
     @Autowired
     private OrdersService ordersService;
 
-    @Autowired
-    private OrderDetailService orderDetailService;
-
-    @Autowired
-    private ShoppingCartService shoppingCartService;
-
     /**
      * 用户下单
      *
@@ -44,8 +38,8 @@ public class OrderController {
      * @return
      */
     @PostMapping("/submit")
-    public R<String> submit(@RequestBody Orders orders) {
-        ordersService.submit(orders);
+    public R<String> submit(@RequestBody Orders orders, HttpSession session) {
+        ordersService.submit(orders, session);
         return R.success("下单成功");
     }
 
@@ -79,6 +73,7 @@ public class OrderController {
 
     /**
      * 后台：订单明细展示。
+     *
      * @param page：页码
      * @param pageSize：页大小
      * @param number：订单号（可以进行模糊查询），不是必须参数。
@@ -102,11 +97,12 @@ public class OrderController {
 
     /**
      * 后台：订单明细-修改订单状态
+     *
      * @param orders：将参数封装成orders对象
      * @return：返回提示信息，订单状态修改成功。
      */
     @PutMapping
-    public R<String> updateStatus(@RequestBody Orders orders){
+    public R<String> updateStatus(@RequestBody Orders orders) {
         ordersService.updateById(orders);
         return R.success("订单状态修改成功");
     }

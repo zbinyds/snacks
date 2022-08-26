@@ -15,18 +15,22 @@ public interface OrdersService extends IService<Orders> {
 
     /**
      * 用户下单
+     *
      * @param orders
+     * @param session
      */
-    void submit(Orders orders);
+    void submit(Orders orders, HttpSession session);
 
     /**
      * 用户订单详情展示
+     *
      * @param orderPage
      */
-    void customPage(Page<Orders> orderPage,HttpSession session);
+    void customPage(Page<Orders> orderPage, HttpSession session);
 
     /**
      * 再来一单
+     *
      * @param orderDetail
      * @param session
      */
