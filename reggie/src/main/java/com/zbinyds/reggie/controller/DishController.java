@@ -1,22 +1,15 @@
 package com.zbinyds.reggie.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zbinyds.reggie.commen.R;
 import com.zbinyds.reggie.dto.DishDto;
-import com.zbinyds.reggie.pojo.Category;
 import com.zbinyds.reggie.pojo.Dish;
-import com.zbinyds.reggie.pojo.DishFlavor;
-import com.zbinyds.reggie.service.DishFlavorService;
 import com.zbinyds.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,9 +27,6 @@ public class DishController {
 
     @Autowired
     private DishService dishService;
-
-    @Autowired
-    private DishFlavorService dishFlavorService;
 
     /**
      * 菜品数据分页展示
@@ -85,8 +75,6 @@ public class DishController {
      */
     @GetMapping("/{dishId}")
     public R<DishDto> edit(@PathVariable("dishId") String dishId) {
-        log.info("修改菜品的id为：{}", dishId);
-
         DishDto dishDto = dishService.getDishAndFlavorById(dishId);
         return R.success(dishDto);
     }
@@ -132,40 +120,15 @@ public class DishController {
     /**
      * 1、后台：套餐管理-添加套餐-添加菜品-显示该菜品分类下面的所有在售菜品。（支持按照菜品名进行模糊查询）
      * 2、前台：用户端-获取对应菜品分类的在售菜品信息
-     *
+     * <p>
      * 根据分类id获取该分类下的菜品信息（包括每个菜品的口味信息）
+     *
      * @param dish：将参数信息封装为dish对象
      * @return：返回查询结果
      */
     @GetMapping("/list")
-    public R<List<DishDto>> list(Dish dish) {
-        log.info("category : {}", dish);
-        // 构造条件查询器（只查起售状态的菜品，并根据条件排序）。当存在查询条件时，按照条件进行模糊查询。
-        QueryWrapper<Dish> dishQueryWrapper = new QueryWrapper<>();
-        dishQueryWrapper.eq(dish.getCategoryId() != null, "category_id", dish.getCategoryId());
-        dishQueryWrapper.like(dish.getName() != null, "name", dish.getName());
-        dishQueryWrapper.eq("status", 1)
-                .orderByAsc("sort")
-                .orderByDesc("update_time");
-        List<Dish> dishList = dishService.list(dishQueryWrapper);
-
-        // 获取每个菜品的口味信息
-        // 将dishList集合中的所有元素，全部复制给dishDtoList集合
-        List<DishDto> dishDtoList = new ArrayList<>(dishList.size());
-        for (int i = 0; i < dishList.size(); i++) {
-            DishDto dishDto = new DishDto();
-            BeanUtils.copyProperties(dishList.get(i), dishDto);
-
-            // 将每个菜品的口味信息添加到dishDtoList集合中
-            Long id = dishList.get(i).getId(); // 获取菜品id
-            QueryWrapper<DishFlavor> dishFlavorQueryWrapper = new QueryWrapper<>();
-            dishFlavorQueryWrapper.eq("dish_id",id);
-            List<DishFlavor> flavors = dishFlavorService.list(dishFlavorQueryWrapper);
-            dishDto.setFlavors(flavors);
-
-            // 将处理好的DishDto添加到DishDtoList集合中
-            dishDtoList.add(dishDto);
-        }
+    public R<List<DishDto>> list(Dish dish) throws JsonProcessingException {
+        List<DishDto> dishDtoList = dishService.getDishAndFlavorList(dish);
         return R.success(dishDtoList);
     }
 }

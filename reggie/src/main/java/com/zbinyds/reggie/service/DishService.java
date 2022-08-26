@@ -1,6 +1,7 @@
 package com.zbinyds.reggie.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zbinyds.reggie.dto.DishDto;
 import com.zbinyds.reggie.pojo.Dish;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -55,4 +56,12 @@ public interface DishService extends IService<Dish> {
      * @param ids
      */
     void removeDishAndFlavors(String ids);
+
+    /**
+     * 根据分类id获取该分类下的菜品信息（包括每个菜品的口味信息）
+     * @param dish
+     * @return
+     * @throws JsonProcessingException
+     */
+    List<DishDto> getDishAndFlavorList(Dish dish) throws JsonProcessingException;
 }
