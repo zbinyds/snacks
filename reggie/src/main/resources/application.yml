@@ -13,6 +13,10 @@ spring:
     port: 6379
     password: 123456
     database: 0
+  cache:
+    redis:
+      # 设置redis缓存时间为30分钟
+      time-to-live: 1800000
 
 mybatis-plus:
   # 开启实体类的别名。我们可以直接通过别名（类名），找到该类。
