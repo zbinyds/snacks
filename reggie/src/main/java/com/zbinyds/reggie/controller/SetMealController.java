@@ -37,9 +37,6 @@ public class SetMealController {
     @Autowired
     private SetmealService setmealService;
 
-    @Autowired
-    private SetmealDishService setmealDishService;
-
     /**
      * 套餐管理信息分页显示功能
      *
