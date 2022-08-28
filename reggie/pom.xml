@@ -104,6 +104,13 @@
             <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
             <version>2.1.0</version>
         </dependency>
+
+        <!-- Knife4j依赖（Spring MVC整合Swagger的依赖，用于生成接口文档） -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>3.0.2</version>
+        </dependency>
     </dependencies>
 
     <!-- 将项目打包成jar包 -->
