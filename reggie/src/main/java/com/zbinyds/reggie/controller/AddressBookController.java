@@ -77,9 +77,9 @@ public class AddressBookController {
      */
     @PutMapping("default")
     @Transactional
-    public R<AddressBook> setDefault(@RequestBody AddressBook addressBook) {
+    public R<AddressBook> setDefault(@RequestBody AddressBook addressBook, HttpSession session) {
         log.info("addressBook:{}", addressBook);
-        addressBookService.defaultAddress(addressBook);
+        addressBookService.setDefaultAddress(addressBook,session);
         return R.success(addressBook);
     }
 

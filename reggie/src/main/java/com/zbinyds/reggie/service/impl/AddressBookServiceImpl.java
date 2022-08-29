@@ -3,12 +3,12 @@ package com.zbinyds.reggie.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zbinyds.reggie.commen.BaseContext;
 import com.zbinyds.reggie.mapper.AddressBookMapper;
 import com.zbinyds.reggie.pojo.AddressBook;
 import com.zbinyds.reggie.service.AddressBookService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -16,13 +16,14 @@ import java.util.List;
  * 地址薄管理-service层
  */
 @Service
-public class AddressBookServiceImpl extends ServiceImpl<AddressBookMapper, AddressBook> implements AddressBookService {
+public class AddressBookServiceImpl extends ServiceImpl<AddressBookMapper, AddressBook>
+        implements AddressBookService {
 
     @Transactional // 涉及到多张表操作，该方法需要加上事务
-    public AddressBook defaultAddress(AddressBook addressBook) {
+    public AddressBook setDefaultAddress(AddressBook addressBook, HttpSession session) {
         // 先将该用户所有地址全部置为普通地址
         LambdaUpdateWrapper<AddressBook> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(AddressBook::getUserId, BaseContext.getCurrentId());
+        wrapper.eq(AddressBook::getUserId, session.getAttribute("user"));
         wrapper.set(AddressBook::getIsDefault, 0);
         //SQL:update address_book set is_default = 0 where user_id = ?
         this.update(wrapper);
