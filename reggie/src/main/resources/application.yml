@@ -54,4 +54,4 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 # 设置图片文件的下载位置
 reggie:
-  path: /usr/local/javaapp/Reggie/reggie_img
+  path: /usr/local/javaapp/Reggie/reggie_img/
