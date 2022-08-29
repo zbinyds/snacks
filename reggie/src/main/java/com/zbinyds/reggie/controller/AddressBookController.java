@@ -1,22 +1,21 @@
 package com.zbinyds.reggie.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zbinyds.reggie.commen.BaseContext;
 import com.zbinyds.reggie.commen.R;
 import com.zbinyds.reggie.pojo.AddressBook;
 import com.zbinyds.reggie.service.AddressBookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
- * 地址簿管理
+ * @author zbinyds
+ * @time 2022/08/18 12:01
+ * <p>
+ * 地址薄管理
  */
 @Slf4j
 @RestController
@@ -30,8 +29,8 @@ public class AddressBookController {
      * 新增地址信息
      */
     @PostMapping
-    public R<AddressBook> save(@RequestBody AddressBook addressBook) {
-        addressBook.setUserId(BaseContext.getCurrentId());
+    public R<AddressBook> save(@RequestBody AddressBook addressBook, HttpSession session) {
+        addressBook.setUserId((Long) session.getAttribute("user"));
         log.info("addressBook:{}", addressBook);
         addressBookService.save(addressBook);
         return R.success(addressBook);
@@ -39,43 +38,38 @@ public class AddressBookController {
 
     /**
      * 删除地址信息
+     *
      * @param ids
      * @return
      */
     @DeleteMapping
-    public R<String> remove(Long ids){
+    public R<String> remove(Long ids) {
         addressBookService.removeById(ids);
         return R.success("删除地址成功");
     }
 
     /**
      * 修改地址信息
+     *
      * @param addressBook
      * @return
      */
     @PutMapping
-    public R<AddressBook> update(@RequestBody AddressBook addressBook) {
-        addressBook.setUserId(BaseContext.getCurrentId());
+    public R<AddressBook> update(@RequestBody AddressBook addressBook, HttpSession session) {
+        addressBook.setUserId((Long) session.getAttribute("user"));
         log.info("addressBook:{}", addressBook);
         addressBookService.updateById(addressBook);
         return R.success(addressBook);
     }
 
     /**
-     * 查询指定用户的全部地址
+     * 查询当前登录用户的全部地址
      */
     @GetMapping("/list")
-    public R<List<AddressBook>> list(AddressBook addressBook) {
-        addressBook.setUserId(BaseContext.getCurrentId());
+    public R<List<AddressBook>> list(AddressBook addressBook, HttpSession session) {
+        addressBook.setUserId((Long) session.getAttribute("user"));
         log.info("addressBook:{}", addressBook);
-
-        //条件构造器
-        LambdaQueryWrapper<AddressBook> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(null != addressBook.getUserId(), AddressBook::getUserId, addressBook.getUserId());
-        queryWrapper.orderByDesc(AddressBook::getIsDefault);
-
-        //SQL:select * from address_book where user_id = ? order by update_time desc
-        return R.success(addressBookService.list(queryWrapper));
+        return R.success(addressBookService.list(addressBook));
     }
 
     /**
@@ -90,34 +84,20 @@ public class AddressBookController {
     }
 
     /**
-     * 根据id查询地址。用于修改地址时的数据回显
+     * 根据地址id查询地址。用于修改地址时的数据回显
      */
     @GetMapping("/{id}")
-    public R get(@PathVariable Long id) {
+    public R<AddressBook> get(@PathVariable Long id) {
         AddressBook addressBook = addressBookService.getById(id);
-        if (addressBook != null) {
-            return R.success(addressBook);
-        } else {
-            return R.error("没有找到该对象");
-        }
+        return addressBook != null ? R.success(addressBook) : R.error("该地址不存在");
     }
 
     /**
      * 查询默认地址
      */
     @GetMapping("default")
-    public R<AddressBook> getDefault() {
-        LambdaQueryWrapper<AddressBook> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(AddressBook::getUserId, BaseContext.getCurrentId());
-        queryWrapper.eq(AddressBook::getIsDefault, 1);
-
-        //SQL:select * from address_book where user_id = ? and is_default = 1
-        AddressBook addressBook = addressBookService.getOne(queryWrapper);
-
-        if (null == addressBook) {
-            return R.error("没有找到该对象");
-        } else {
-            return R.success(addressBook);
-        }
+    public R<AddressBook> getDefault(HttpSession session) {
+        AddressBook addressBook = addressBookService.getDefaultAddress(session);
+        return addressBook != null ? R.success(addressBook) : R.error("该地址不存在");
     }
 }

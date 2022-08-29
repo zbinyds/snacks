@@ -5,20 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zbinyds.reggie.commen.CustomException;
-import com.zbinyds.reggie.commen.R;
 import com.zbinyds.reggie.dto.SetmealDto;
-import com.zbinyds.reggie.pojo.Dish;
+import com.zbinyds.reggie.mapper.SetmealMapper;
 import com.zbinyds.reggie.pojo.Setmeal;
 import com.zbinyds.reggie.pojo.SetmealDish;
 import com.zbinyds.reggie.service.SetmealDishService;
 import com.zbinyds.reggie.service.SetmealService;
-import com.zbinyds.reggie.mapper.SetmealMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -28,10 +24,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * 套餐管理-service层
  */
 @Service
 public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> implements SetmealService {

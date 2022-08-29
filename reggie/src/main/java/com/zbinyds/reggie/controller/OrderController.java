@@ -1,27 +1,21 @@
 package com.zbinyds.reggie.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zbinyds.reggie.commen.R;
-import com.zbinyds.reggie.dto.OrdersDto;
 import com.zbinyds.reggie.pojo.OrderDetail;
 import com.zbinyds.reggie.pojo.Orders;
-import com.zbinyds.reggie.pojo.ShoppingCart;
-import com.zbinyds.reggie.service.OrderDetailService;
 import com.zbinyds.reggie.service.OrdersService;
-import com.zbinyds.reggie.service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Date;
-import java.util.List;
 
 /**
- * 订单
+ * @author zbinyds
+ * @time 2022/08/19 12:01
+ * <p>
+ * 订单管理
  */
 @Slf4j
 @RestController
@@ -52,6 +46,7 @@ public class OrderController {
      */
     @GetMapping("/userPage")
     public R<Page> page(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize, HttpSession session) {
+        // 用户个人订单详情，涉及到多表查询。
         Page<Orders> orderPage = new Page<>(page, pageSize);
         ordersService.customPage(orderPage, session);
         return R.success(orderPage);
@@ -76,9 +71,9 @@ public class OrderController {
      *
      * @param page：页码
      * @param pageSize：页大小
-     * @param number：订单号（可以进行模糊查询），不是必须参数。
-     * @param beginTime：开始时间（可以进行时间范围查询），不是必须参数。
-     * @param endTime：结束时间，不是必须参数。
+     * @param number：订单号（可以进行模糊查询）。非必须参数
+     * @param beginTime：开始时间（可以进行时间范围查询）。非必须参数
+     * @param endTime：结束时间。非必须参数
      * @return：返回page对象。
      */
     @GetMapping("/page")
@@ -86,12 +81,8 @@ public class OrderController {
                         @RequestParam(required = false) String number,
                         @RequestParam(required = false) String beginTime,
                         @RequestParam(required = false) String endTime) {
-        Page<Orders> ordersPage = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(number != null, Orders::getNumber, number);
-        queryWrapper.between(beginTime != null && endTime != null, Orders::getCheckoutTime, beginTime, endTime);
-        queryWrapper.orderByDesc(Orders::getCheckoutTime); // 按照下单时间降序排序
-        ordersService.page(ordersPage, queryWrapper);
+        // 获取所有订单信息
+        Page ordersPage = ordersService.orderPage(page, pageSize, number, beginTime, endTime);
         return R.success(ordersPage);
     }
 
@@ -103,6 +94,7 @@ public class OrderController {
      */
     @PutMapping
     public R<String> updateStatus(@RequestBody Orders orders) {
+        // 修改用户订单状态（已配送、已完成...）
         ordersService.updateById(orders);
         return R.success("订单状态修改成功");
     }

@@ -7,7 +7,7 @@ import com.zbinyds.reggie.mapper.OrderDetailMapper;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * 订单详情-service层
  */
 @Service
 public class OrderDetailServiceImpl extends ServiceImpl<OrderDetailMapper, OrderDetail>

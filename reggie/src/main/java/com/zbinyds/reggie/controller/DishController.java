@@ -75,8 +75,7 @@ public class DishController {
      */
     @GetMapping("/{dishId}")
     public R<DishDto> edit(@PathVariable("dishId") String dishId) {
-        DishDto dishDto = dishService.getDishAndFlavorById(dishId);
-        return R.success(dishDto);
+        return R.success(dishService.getDishAndFlavorById(dishId));
     }
 
     /**
@@ -128,7 +127,6 @@ public class DishController {
      */
     @GetMapping("/list")
     public R<List<DishDto>> list(Dish dish) throws JsonProcessingException {
-        List<DishDto> dishDtoList = dishService.getDishAndFlavorList(dish);
-        return R.success(dishDtoList);
+        return R.success(dishService.getDishAndFlavorList(dish));
     }
 }

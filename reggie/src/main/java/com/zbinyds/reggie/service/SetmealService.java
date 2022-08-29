@@ -1,18 +1,16 @@
 package com.zbinyds.reggie.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.zbinyds.reggie.dto.DishDto;
-import com.zbinyds.reggie.dto.SetmealDto;
-import com.zbinyds.reggie.pojo.Dish;
-import com.zbinyds.reggie.pojo.Setmeal;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.zbinyds.reggie.dto.SetmealDto;
+import com.zbinyds.reggie.pojo.Setmeal;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 /**
- *
+ * 套餐管理-service层
  */
 public interface SetmealService extends IService<Setmeal> {
     /**

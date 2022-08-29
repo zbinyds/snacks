@@ -7,7 +7,7 @@ import com.zbinyds.reggie.mapper.SetmealDishMapper;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * 套餐中菜品-service层
  */
 @Service
 public class SetmealDishServiceImpl extends ServiceImpl<SetmealDishMapper, SetmealDish>

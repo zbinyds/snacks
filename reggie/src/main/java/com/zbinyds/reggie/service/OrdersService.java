@@ -1,15 +1,14 @@
 package com.zbinyds.reggie.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.zbinyds.reggie.pojo.OrderDetail;
 import com.zbinyds.reggie.pojo.Orders;
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.apache.ibatis.annotations.Param;
 
 import javax.servlet.http.HttpSession;
 
 /**
- *
+ * 订单管理-service层
  */
 public interface OrdersService extends IService<Orders> {
 
@@ -35,4 +34,16 @@ public interface OrdersService extends IService<Orders> {
      * @param session
      */
     void againOrder(OrderDetail orderDetail, HttpSession session);
+
+    /**
+     * 查询后台所有订单信息并进行分页展示
+     *
+     * @param page：页码
+     * @param pageSize：页大小
+     * @param number：订单号（可以进行模糊查询），不是必须参数。
+     * @param beginTime：开始时间（可以进行时间范围查询），不是必须参数。
+     * @param endTime：结束时间，不是必须参数。
+     * @return：返回page对象。
+     */
+    Page orderPage(Integer page, Integer pageSize, String number, String beginTime, String endTime);
 }

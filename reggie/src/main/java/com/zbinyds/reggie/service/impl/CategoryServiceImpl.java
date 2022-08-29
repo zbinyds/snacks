@@ -1,18 +1,20 @@
 package com.zbinyds.reggie.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zbinyds.reggie.commen.CustomException;
+import com.zbinyds.reggie.mapper.CategoryMapper;
 import com.zbinyds.reggie.pojo.Category;
 import com.zbinyds.reggie.pojo.Dish;
 import com.zbinyds.reggie.pojo.Setmeal;
 import com.zbinyds.reggie.service.CategoryService;
-import com.zbinyds.reggie.mapper.CategoryMapper;
 import com.zbinyds.reggie.service.DishService;
 import com.zbinyds.reggie.service.SetmealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 分类管理-service层
@@ -46,6 +48,26 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
         }
         // 都正常的情况下，才能删除分类
         super.removeById(id);
+    }
+
+    @Override
+    public Page<Category> pageCategory(Integer page, Integer pageSize) {
+        // 分页对象
+        Page<Category> categoryPage = new Page<>(page, pageSize);
+        // 条件构造器-->按照sort升序排序
+        QueryWrapper<Category> categoryQueryWrapper = new QueryWrapper<>();
+        categoryQueryWrapper.orderByAsc("sort");
+        return page(categoryPage,categoryQueryWrapper);
+    }
+
+    @Override
+    public List<Category> list(Category category) {
+        // 条件构造器
+        QueryWrapper<Category> categoryQueryWrapper = new QueryWrapper<>();
+        categoryQueryWrapper.eq(category.getType() != null, "type", category.getType());
+        categoryQueryWrapper.orderByAsc("sort")
+                .orderByDesc("update_time");
+        return list(categoryQueryWrapper);
     }
 }
 

@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- *
+ * 菜品管理-service层
  */
 public interface DishService extends IService<Dish> {
 

@@ -10,7 +10,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletContext;
 import java.io.*;
 import java.util.UUID;
 
@@ -18,7 +17,7 @@ import java.util.UUID;
  * @author zbinyds
  * @time 2022/08/18 11:17
  *
- * 文件上传、下载
+ * 全局文件上传、下载请求-控制层
  */
 
 @RestController

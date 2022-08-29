@@ -1,14 +1,11 @@
 package com.zbinyds.reggie.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zbinyds.reggie.commen.R;
 import com.zbinyds.reggie.pojo.Employee;
 import com.zbinyds.reggie.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -17,7 +14,7 @@ import javax.servlet.http.HttpSession;
  * @author zbinyds
  * @time 2022/08/15 20:42
  *
- * 员工管理、登录与下线
+ * 后台员工管理
  */
 
 @RestController
@@ -37,28 +34,8 @@ public class EmployeeController {
      */
     @PostMapping("/login")
     public R<Employee> login(@RequestBody Employee employee, HttpSession session) {
-        // 1、根据页面提交的用户名username查询数据库
-        QueryWrapper<Employee> employeeQueryWrapper = new QueryWrapper<>();
-        employeeQueryWrapper.eq("username", employee.getUsername());
-        Employee emp = employeeService.getOne(employeeQueryWrapper);
-        // 2、如果数据库不存在该用户，返回登录失败结果
-        if (emp == null) {
-            return R.error("账号或密码错误");
-        }
-        // 3、将密码进行MD5加密
-        String password = employee.getPassword();
-        password = DigestUtils.md5DigestAsHex(password.getBytes());
-        // 4、密码比对，如果不一致则返回登录失败结果
-        if (!emp.getPassword().equals(password)) {
-            return R.error("账号或密码错误");
-        }
-        // 5、查看员工状态，如果为已禁用状态，则返回员工已禁用结果
-        if (emp.getStatus() == 0) {
-            return R.error("账号已被禁用");
-        }
-        //6、登录成功，将员工id存入Session并返回登录成功结果
-        session.setAttribute("currentEmp", emp.getId());
-        return R.success(emp);
+        R<Employee> emp = employeeService.getEmp(employee, session);
+        return emp;
     }
 
     /**
@@ -95,20 +72,11 @@ public class EmployeeController {
      * @param page：目标页码
      * @param pageSize：每页数据大小
      * @param name：查询条件（不是必须参数，可以没有）
-     * @return
+     * @return：返回分页对象
      */
     @GetMapping("/page")
     public R<Page> page(@RequestParam Integer page, @RequestParam Integer pageSize, @RequestParam(required = false) String name) {
-        // 使用分页插件进行分页
-        Page<Employee> employeePage = new Page<>(page, pageSize);
-        // 根据员工姓名进行模糊查询（条件输入框存在值）
-        QueryWrapper<Employee> employeeQueryWrapper = new QueryWrapper<>();
-        // 判断是否存在条件查询（name是否为null），不为null表示需要进行模糊匹配，为null则此语句不生效
-        employeeQueryWrapper.like(StringUtils.isNotEmpty(name),"name", name)
-                            .ne("username","admin") // 管理员用户信息不进行展示
-                            .orderByAsc("create_time"); // 按照创建时间升序排序
-        employeeService.page(employeePage, employeeQueryWrapper);
-        return R.success(employeePage);
+        return R.success(employeeService.pageEmployee(page,pageSize,name));
     }
 
     /**
@@ -119,6 +87,7 @@ public class EmployeeController {
      */
     @PutMapping
     public R<String> update(@RequestBody Employee employee){
+        // 根据员工id修改员工状态
         employeeService.updateById(employee);
         return R.success("员工状态修改成功");
     }
@@ -130,10 +99,8 @@ public class EmployeeController {
      */
     @GetMapping("/{id}")
     public R<Employee> edit(@PathVariable String id){
+        // 根据id获取需要回显的用户对象
         Employee employee = employeeService.getById(id);
-        if (employee != null){
-            return R.success(employee);
-        }
-        return R.error("没有查询到该用户信息");
+        return employee != null ? R.success(employee) : R.error("不存在该用户！");
     }
 }

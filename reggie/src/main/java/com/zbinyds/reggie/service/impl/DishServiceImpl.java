@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * 菜品管理-service层
  */
 @Service
 public class DishServiceImpl extends ServiceImpl<DishMapper, Dish>

@@ -1,6 +1,5 @@
 package com.zbinyds.reggie.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zbinyds.reggie.commen.R;
 import com.zbinyds.reggie.pojo.Category;
@@ -47,11 +46,7 @@ public class CategoryController {
      */
     @GetMapping("page")
     public R<Page> page(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize) {
-        Page<Category> categoryPage = new Page<>(page, pageSize);
-        QueryWrapper<Category> categoryQueryWrapper = new QueryWrapper<>();
-        categoryQueryWrapper.orderByAsc("sort");
-        categoryService.page(categoryPage, categoryQueryWrapper);
-        return R.success(categoryPage);
+        return R.success(categoryService.pageCategory(page, pageSize));
     }
 
     /**
@@ -62,7 +57,6 @@ public class CategoryController {
      */
     @PutMapping
     public R<String> edit(@RequestBody Category category) {
-        log.info("{}", category);
         categoryService.updateById(category);
         return R.success("分类修改成功");
     }
@@ -76,7 +70,6 @@ public class CategoryController {
     @DeleteMapping
     public R<String> delete(@RequestParam("ids") Long id) {
         log.info("即将删除的分类id：{}", id);
-//        categoryService.removeById(id);
         categoryService.remove(id);
         return R.success("删除分类成功");
     }
@@ -90,13 +83,7 @@ public class CategoryController {
      */
     @GetMapping("/list")
     public R<List<Category>> list(Category category) {
-        QueryWrapper<Category> categoryQueryWrapper = new QueryWrapper<>();
-        categoryQueryWrapper.eq(category.getType() != null, "type", category.getType());
-        categoryQueryWrapper.orderByAsc("sort")
-                .orderByDesc("update_time");
-
-        List<Category> list = categoryService.list(categoryQueryWrapper);
-        return R.success(list);
+        return R.success(categoryService.list(category));
     }
 
 }

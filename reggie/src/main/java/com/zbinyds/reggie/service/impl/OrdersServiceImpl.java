@@ -4,26 +4,24 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zbinyds.reggie.commen.BaseContext;
 import com.zbinyds.reggie.commen.CustomException;
 import com.zbinyds.reggie.controller.ShoppingCartController;
+import com.zbinyds.reggie.mapper.OrdersMapper;
 import com.zbinyds.reggie.pojo.*;
 import com.zbinyds.reggie.service.*;
-import com.zbinyds.reggie.mapper.OrdersMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
- *
+ * 订单管理-service层
  */
 @Service
 public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
@@ -165,6 +163,18 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
             }
             shoppingCartService.save(cart);
         }
+    }
+
+    @Override
+    public Page orderPage(Integer page, Integer pageSize, String number, String beginTime, String endTime) {
+        Page<Orders> ordersPage = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
+        // 根据订单号进行模糊查询
+        queryWrapper.like(number != null, Orders::getNumber, number);
+        // 根据下单时间进行范围查询
+        queryWrapper.between(beginTime != null && endTime != null, Orders::getCheckoutTime, beginTime, endTime);
+        queryWrapper.orderByDesc(Orders::getCheckoutTime); // 按照下单时间降序排序
+        return page(ordersPage, queryWrapper);
     }
 }
 
