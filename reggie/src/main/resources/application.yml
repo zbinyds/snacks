@@ -32,6 +32,13 @@ spring:
     props:
       sql:
         show: true #开启SQL显示，默认false
+
+  # 配置发送邮件的账号、密码等相关信息
+  mail:
+    host: smtp.126.com # 126官方服务器，用于发送验证码邮件。
+    username: zbinyds@126.com # 发送邮件的账号
+    password: QQZXGQRPTTJKQNFA # 发送邮件账号对应的秘钥（注意不是密码！该秘钥在开启SMTP服务时会给出。）
+
   main:
     allow-bean-definition-overriding: true # 允许数据源覆盖（处理druid依赖和sharding-jdbc依赖冲突的问题）
 
