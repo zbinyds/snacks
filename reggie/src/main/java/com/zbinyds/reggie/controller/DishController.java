@@ -40,17 +40,6 @@ public class DishController {
     public R<Page> page(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,
                         @RequestParam(required = false, value = "name") String dishName) {
         Page<Dish> dishPage = new Page<>(page, pageSize);
-
-        /**
-         * 此处，官方使用的是DishDto类型，然后使用BeanUtils工具类复制的方法，太麻烦...
-         * 遂进行了修改，我们直接手写一个实现分页功能的多表联查，获取到category表中的name字段，并将其赋值给实体类中的categoryName
-         * 这样我们就不用使用官方的方式，进行page对象的复制、遍历了。
-         */
-//        UpdateWrapper<Dish> dishUpdateWrapper = new UpdateWrapper<>();
-//        dishUpdateWrapper.like(StringUtils.isNotEmpty(dishName), "name", dishName)
-//                        .orderByDesc("update_time");
-//        dishService.page(dishPage, dishUpdateWrapper);
-
         dishService.pageCustom(dishPage, dishName);
         return R.success(dishPage);
     }
